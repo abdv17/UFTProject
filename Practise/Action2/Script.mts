@@ -1,6 +1,6 @@
 ﻿
 
-LoadAndRunAction "C:\Users\bd2kfk\Documents\Unified Functional Testing\Practise","Login",oneIteration
+LoadAndRunAction "C:\Users\Lenovo\Documents\Unified Functional Testing\Practise","Login",oneIteration
 Environment.Value("bExecStatus") = False
 Dim sobjPage,sWebObject
 Set sobjPage = Browser("Find a Flight: Mercury").Page("Find a Flight: Mercury")

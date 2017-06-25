@@ -2,7 +2,7 @@
 'Writing functions to open an existing excel
 'Read data,execute accordingly
 'Update data after execution
-'
+
 
 sExcelFilePath = Environment.Value("TestDir") & "\TestData\TestCasesData.xlsx"
 
@@ -21,7 +21,7 @@ For i = 1 To iRwcnt
 			Environment.Value("TCName") = objWrkSht.Cells(i,2).Value
 			Call fn_CreateWordDoc()
 			objWrkSht.Cells(i,6).Value = Time	
-			LoadAndRunAction "C:\Users\bd2kfk\Documents\Unified Functional Testing\Practise",Environment.Value("ActionWord"),oneIteration
+			LoadAndRunAction "C:\Users\Lenovo\Documents\Unified Functional Testing\Practise",Environment.Value("ActionWord"),oneIteration
 			objWrkSht.Cells(i,7).Value = Time
 			objWrkSht.Cells(i,8).Value = Second(objWrkSht.Cells(i,7).Value - objWrkSht.Cells(i,6).Value) & " Seconds"
 			If Environment("bExecStatus") Then
