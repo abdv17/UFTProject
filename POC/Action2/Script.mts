@@ -45,3 +45,47 @@ objExcel.Quit
 
 'Call for HTML reporting after test data excel sheet complete update done.
 Call fn_HTMLReporting(sExcelFilePath)
+
+
+
+
+'Code to send a mail with run results/report
+Call fn_generateMail()
+Public Function fn_generateMail()
+	
+'Code to send a mail with run results/report
+
+Dim ToAddress 
+Dim Subject 
+Dim Body 
+Dim Attachment 
+Dim oUtlookApp, nAmeSpace, newMail 
+
+SystemUtil.Run "C:\Program Files\Microsoft Office\Office11\OUTLOOK.EXE" 'This line should be enabled if the Outlook on the desktop is not running 
+
+ToAddress = "sai.gaddam.ext@siemens.com" ' Message recipient Address 
+
+Set oUtlookApp = CreateObject("Outlook.Application")
+
+Set nAmeSpace = oUtlookApp.GetNamespace("MAPI") 
+
+Set newMail = oUtlookApp.CreateItem(0) 
+
+Subject = "This is a test mail" 'Message Subject you can update
+
+Body = "This the message for testing. " 'Message body you can update
+
+newMail.Subject = Subject 
+
+newMail.Body = Body & vbCrLf 
+
+newMail.Recipients.Add(ToAddress) 
+
+newMail.Attachments.Add(Environment.Value("FunctionLogPath")) 'You can update attachment file name 
+newMail.Attachments.Add(Environment.Value("TestDir") & "\Report.html")
+newMail.Send 
+
+Set nAmeSpace = Nothing 
+
+Set oUtlookApp = Nothing 
+End Function
