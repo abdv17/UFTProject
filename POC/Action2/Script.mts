@@ -1,7 +1,7 @@
-﻿'Working with Excel Objects
-'Writing functions to open an existing excel
-'Read data,execute accordingly
-'Update data after execution
+﻿''Working with Excel Objects
+''Writing functions to open an existing excel
+''Read data,execute accordingly
+''Update data after execution
 '
 
 sExcelFilePath = Environment.Value("TestDir") & "\TestData\TestCasesData.xlsx"
@@ -14,6 +14,8 @@ Set objWrkSht = objWrkBk.Worksheets("Sheet1")
 iRwcnt = objWrkSht.UsedRange.Rows.Count
 iClncnt = objWrkSht.UsedRange.Columns.Count
 For i = 1 To iRwcnt
+Browser("Find a Flight: Mercury").Sync
+
 	
 		If objWrkSht.Cells(i,4).Value = "Yes" Then
 			Environment.Value("bExecStatus") = False
@@ -21,7 +23,7 @@ For i = 1 To iRwcnt
 			Environment.Value("TCName") = objWrkSht.Cells(i,2).Value
 			Call fn_CreateWordDoc()
 			objWrkSht.Cells(i,6).Value = Time	
-			LoadAndRunAction "C:\Users\bd2kfk\Documents\Unified Functional Testing\Practise",Environment.Value("ActionWord"),oneIteration
+			LoadAndRunAction Environment("ActionWords"),Environment.Value("ActionWord"),oneIteration
 			objWrkSht.Cells(i,7).Value = Time
 			objWrkSht.Cells(i,8).Value = Second(objWrkSht.Cells(i,7).Value - objWrkSht.Cells(i,6).Value) & " Seconds"
 			If Environment("bExecStatus") Then
@@ -45,3 +47,79 @@ objExcel.Quit
 
 'Call for HTML reporting after test data excel sheet complete update done.
 Call fn_HTMLReporting(sExcelFilePath)
+
+
+
+
+'Code to send a mail with run results/report
+Call fn_generateMail()
+Public Function fn_generateMail()
+	
+'Code to send a mail with run results/report
+
+Dim ToAddress 
+Dim Subject 
+Dim Body 
+Dim Attachment 
+Dim oUtlookApp, nAmeSpace, newMail 
+
+'SystemUtil.Run "C:\Program Files\Microsoft Office\Office11\OUTLOOK.EXE" 'This line should be enabled if the Outlook on the desktop is not running 
+
+ToAddress = "sai.gaddam.ext@siemens.com" ' Message recipient Address 
+
+Set oUtlookApp = CreateObject("Outlook.Application")
+
+Set nAmeSpace = oUtlookApp.GetNamespace("MAPI") 
+
+Set newMail = oUtlookApp.CreateItem(0) 
+
+Subject = "This is a test mail" 'Message Subject you can update
+
+Body = "This the message for testing. " 'Message body you can update
+
+newMail.Subject = Subject 
+
+newMail.Body = Body & vbCrLf 
+
+newMail.Recipients.Add(ToAddress) 
+
+newMail.Attachments.Add(Environment.Value("FunctionLogPath")) 'You can update attachment file name 
+newMail.Attachments.Add(Environment.Value("TestDir") & "\Report.html")
+newMail.Send 
+
+Set nAmeSpace = Nothing 
+
+Set oUtlookApp = Nothing 
+End Function
+'
+'
+'
+
+
+
+
+sfilePath = "C:\Users\bd2kfk\Documents\Unified Functional Testing\POC\FunctionLog\7_4_2017_3_13_37_PM.txt"
+
+Set oFso = CreateObject("Scripting.FileSystemObject")
+Set fReport = oFso.OpenTextFile(sfilePath,1)
+Set ftxt = oFso.CreateTextFile(Environment("TestDir") & "\Report1.html")
+	ftxt.WriteLine "<html>"
+	ftxt.WriteLine "<head>"
+	ftxt.WriteLine "<title>Report</title>"
+	ftxt.WriteLine "</head>"
+	ftxt.WriteLine "<body>"
+Do
+	ftxt.WriteLine "<p>" & fReport.ReadLine & "</p>"
+Loop Until fReport.AtEndOfStream
+
+ftxt.WriteLine "</body>"
+ftxt.WriteLine "</html>"
+ftxt.Close
+Set ftxt = Nothing
+Set fReport = Nothing
+Set oFso = Nothing
+
+
+'Call dummy()
+'RunAction "Action2", "1 - 1"
+
